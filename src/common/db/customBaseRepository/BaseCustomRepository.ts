@@ -10,7 +10,10 @@ export abstract class BaseCustomRepository<T extends AuditEntity>
     return await super.findOne({
       ...options,
       where: {
-        ...options.where,
+        ...options?.where,
+        //hotfix
+        //kur e kemi indefined mos me kthy error po null kur nuk kemi te dhena
+        //that allows you to safely access properties or methods of an object that may be undefined or null
         deleted_at: null,
       },
     });
@@ -20,7 +23,7 @@ export abstract class BaseCustomRepository<T extends AuditEntity>
     return await super.find({
       ...options,
       where: {
-        ...options.where,
+        ...options?.where,
         deleted_at: null,
       },
     });

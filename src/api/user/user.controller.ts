@@ -34,12 +34,15 @@ import { Public } from '../../common/decorators/public.decorator';
 @ApiTags('User')
 @UsePipes(new ValidationPipe())
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(PermissionsGuard)
+//@UseGuards(PermissionsGuard)
+//middleware qe shikon a kemi premission me hi te nje metode e caktume apo jo amo e heqim se nuk ekziston
 export class UserController implements IUserController {
   constructor(private readonly usersService: UserService) {}
 
   //example how permissions work
   @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
+  //ktu ja kemi jep premission e ketij sistemi e te middleware ma nalt i kemi thon nuk guxon
+  @Public()
   @Get('hello')
   async getHello() {
     return `Hello from Hello Method`;
@@ -78,7 +81,7 @@ export class UserController implements IUserController {
     return await this.usersService.update(user.uuid, updateUserDto);
   }
 
-  @Roles(UserRoles.ADMIN)
+  //@Roles(UserRoles.ADMIN)
   @Patch(':userId')
   async updateUser(
     @Param('userId') userId: string,
@@ -87,13 +90,13 @@ export class UserController implements IUserController {
     return await this.usersService.update(userId, updateUserDto);
   }
 
-  @Roles(UserRoles.ADMIN)
+  //@Roles(UserRoles.ADMIN)
   @Delete(':userId')
   async remove(@Param('userId') userId: string): Promise<void> {
     return await this.usersService.remove(userId);
   }
 
-  @Roles(UserRoles.ADMIN)
+  //@Roles(UserRoles.ADMIN)
   @Post('add-permission/:userId')
   async addPermission(
     @Param('userId') userId: string,
@@ -102,7 +105,7 @@ export class UserController implements IUserController {
     return this.usersService.addPermission(userId, permission);
   }
 
-  @Roles(UserRoles.ADMIN)
+  //@Roles(UserRoles.ADMIN)
   @Post('remove-permission/:userId')
   async removePermission(
     @Param('userId') userId: string,
