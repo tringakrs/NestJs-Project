@@ -3,6 +3,8 @@ import { dirname } from 'path';
 import { User } from '../../../api/user/entities/user.entity';
 import { PasswordReset } from '../../../api/user/entities/reset-password.entity';
 import { Roles } from '../../decorators/roles.decorator';
+import { ProjectModule } from '../../../api/project/project.module';
+import { Project } from 'src/api/project/entities/project.entity';
 
 export const config = {
   name: 'default',
@@ -14,7 +16,7 @@ export const config = {
   database: process.env.TYPEORM_NAME,
   synchronize: true,
   dropSchema: false,
-  entities: [User, PasswordReset],
+  entities: [User, PasswordReset, Project],
   //ktu osht bo ndrrimi qe me u bo prej dinamik ne statik edhe me bo ne windows
   migrations: [process.env.TYPEORM_MIGRATIONS],
   logging: process.env.NODE_ENV === 'localhost',
@@ -28,7 +30,7 @@ export const configNoEntities = {
   port: process.env.TYPEORM_PORT || 5432,
   username: process.env.TYPEORM_USER,
   password: process.env.TYPEORM_PASSWORD,
-  entities: [User, PasswordReset],
+  entities: [User, PasswordReset, Project],
   //edhe ktu duhet me ndrru tani me fshi dist me bo npm run build edhe npm run build
   database: process.env.TYPEORM_NAME,
   migrations: [process.env.TYPEORM_MIGRATIONS],
