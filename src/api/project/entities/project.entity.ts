@@ -8,9 +8,10 @@ import { Column,
     JoinTable, } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Type } from '../enums/type.enum';
+import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 
 @Entity('project')
-export class Project extends User {
+export class Project extends AuditEntity {
     @Column({ nullable: true })
     url: string;
   
