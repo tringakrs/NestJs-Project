@@ -7,13 +7,11 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { IUserController } from './interfaces/user.controller.interface';
-import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Permission } from '../../common/decorators/permissions.decorator';
 import { UserPermissions } from './enums/permissions.enum';
 import { GetCurrentUser } from '../../common/decorators/get-current-user.decorator';

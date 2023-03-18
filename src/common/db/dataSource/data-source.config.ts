@@ -1,8 +1,6 @@
 import 'dotenv/config';
-import { dirname } from 'path';
 import { User } from '../../../api/user/entities/user.entity';
 import { PasswordReset } from '../../../api/user/entities/reset-password.entity';
-import { ProjectModule } from '../../../api/project/project.module';
 import { Project } from 'src/api/project/entities/project.entity';
 import { Role } from '../../../api/roles/entities/role.entity';
 
@@ -20,7 +18,7 @@ export const config = {
   //ktu osht bo ndrrimi qe me u bo prej dinamik ne statik edhe me bo ne windows
   migrations: [process.env.TYPEORM_MIGRATIONS],
   logging: process.env.NODE_ENV === 'localhost',
-  seeds: [User],
+  seeds: [User, Role],
 };
 
 export const configNoEntities = {
@@ -35,5 +33,5 @@ export const configNoEntities = {
   database: process.env.TYPEORM_NAME,
   migrations: [process.env.TYPEORM_MIGRATIONS],
   logging: process.env.NODE_ENV === 'localhost',
-  seeds: [User],
+  seeds: [User, Role],
 };

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { Project } from '../entities/project.entity';
 import { Type } from '../enums/type.enum';
 
 export class UpdateProjectDto {
@@ -14,7 +13,9 @@ export class UpdateProjectDto {
   @ApiProperty()
   name: string;
 
-  @IsEnum(Project)
+  @IsEnum(Type, {
+    message: `type must be a valid value (${Object.values(Type).join(', ')})`,
+  })
   @IsOptional()
   @ApiProperty()
   type: Type;

@@ -5,7 +5,7 @@ import { IsEnum, IsString } from 'class-validator';
 export class CreateProjectDto {
   @IsString()
   @ApiProperty()
-  utl: string;
+  url: string;
 
   @IsString()
   @ApiProperty()
