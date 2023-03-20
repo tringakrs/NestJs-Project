@@ -1,10 +1,11 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 import { BaseCustomRepository } from '../../../common/db/customBaseRepository/BaseCustomRepository';
 import { CustomRepository } from '../../../common/db/decorators/CustomRepository.decorator';
-import { CreateProjectDto } from '../dto/create-project.dto';
+import { CreateProjectDto } from '../dtos/create-project.dto';
 import { Project } from '../entities/project.entity';
 import { IProjectRepository } from '../interfaces/project.repository.interface';
-import { UpdateProjectDto } from '../dto/update-project.dto';
+import { UpdateProjectDto } from '../dtos/update-project.dto';
+import { User } from 'src/api/user/entities/user.entity';
 
 @CustomRepository(Project)
 export class ProjectRepository
@@ -63,5 +64,13 @@ export class ProjectRepository
   async removeProject(projectId: string): Promise<void> {
     const project = await this.findOneBy({ uuid: projectId });
     await this.delete(project.id);
+  }
+
+  async addUserToProject(projectId: string, userId: string): Promise<void> {
+    const project = await this.getProjectById(projectId);
+    const user = await this.manager.findOne(User, { where: { uuid: userId } });
+
+    project.users = [user];
+    await this.save(project);
   }
 }

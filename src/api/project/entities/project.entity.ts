@@ -5,10 +5,12 @@ import { Column,
     Entity, 
     UpdateDateColumn, 
     ManyToMany, 
-    JoinTable, } from 'typeorm';
+    JoinTable,
+    ManyToOne, } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Type } from '../enums/type.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
+import { Tasks } from 'src/api/tasks/entities/tasks.entity';
 
 @Entity('project')
 export class Project extends AuditEntity {
@@ -44,4 +46,7 @@ project
     
       @DeleteDateColumn()
       deleted_at: Date;
+
+      @ManyToOne(() => Tasks, (tasks) => tasks.projects)
+      tasks: Tasks;
 }

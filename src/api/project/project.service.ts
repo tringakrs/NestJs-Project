@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { CreateProjectDto } from './dtos/create-project.dto';
+import { UpdateProjectDto } from './dtos/update-project.dto';
 import { Project } from './entities/project.entity';
 import { ProjectRepository } from './repository/project.repository';
 
@@ -19,11 +19,15 @@ export class ProjectService {
     return await this.projectRepository.getProjectById(projectId);
   }
 
-    async updateProject(projectId: string, updateProjectDto : UpdateProjectDto) : Promise<Project>{
-      return await this.projectRepository.updateProject(projectId,updateProjectDto)
-    }
-
-  async removeProject(projectId: string): Promise<void> {
+  async updateProject(projectId: string, updateProjectDto : UpdateProjectDto) : Promise<Project>{
+    return await this.projectRepository.updateProject(projectId,updateProjectDto)
+  }
+  
+  async removeProject(projectId:string) : Promise<void>{
     return await this.projectRepository.removeProject(projectId);
+  }
+  
+  async addUserToProject(projectId:string, userId: string) :Promise<void>{
+    return await this.projectRepository.addUserToProject(projectId,userId)
   }
 }

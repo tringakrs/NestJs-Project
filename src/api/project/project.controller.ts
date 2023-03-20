@@ -8,20 +8,16 @@ import {
   Delete,
   UseGuards,
   Put,
-  UseInterceptors,
 } from '@nestjs/common';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
-import { UserRoles } from '../user/enums/roles.enum';
 import { ProjectService } from './project.service';
-import { CreateProjectDto } from './dto/create-project.dto';
+import { CreateProjectDto } from './dtos/create-project.dto';
 import { Project } from './entities/project.entity';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { UpdateProjectDto } from './dtos/update-project.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ApiTags } from '@nestjs/swagger';
 @UseGuards(new RolesGuard())
-@ApiTags('project')
+@ApiTags('Project')
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
@@ -56,25 +52,10 @@ export class ProjectController {
   async removeProject(@Param('id') id: string): Promise<void> {
     return await this.projectService.removeProject(id);
   }
-  // @Roles(UserRoles.ADMIN)
-  // @UseInterceptors(PaginationInterceptor)
-  // @Get()
-  // async findAll(){
-  //     return await this.projectService.findAll();
-  // }
-  // @Roles(UserRoles.ADMIN)
-  // @Get(':projectId')
-  // async findOne(@Param('projectId') projectId:string): Promise<Project>{
-  //     return await this.projectService.findOne(projectId)
-  // }
-  // @Roles(UserRoles.ADMIN)
-  // @Put(':projectId')
-  // async update(@Param('projectId') projectId : string, @Body() data : UpdateProjectDto){
-  //     return this.projectService.update(projectId,data)
-  // }
-  // @Roles(UserRoles.ADMIN)
-  // @Delete(':projectId')
-  // async remove(@Param('projectId') projectId: string){
-  //     return await this.projectService.remove(projectId)
-  // }
+
+  @Public()
+  @Post(':id/users/:userId')
+  async addUserToProject(@Param('id') projectId: string, @Param('userId') userId: string): Promise<void> {
+  return await this.projectService.addUserToProject(projectId, userId);
+  }
 }

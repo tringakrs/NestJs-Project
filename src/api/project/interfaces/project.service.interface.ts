@@ -1,7 +1,7 @@
 // remove eslint comment when you start to populate the interface
 
-import { CreateProjectDto } from '../dto/create-project.dto';
-import { UpdateProjectDto } from '../dto/update-project.dto';
+import { CreateProjectDto } from '../dtos/create-project.dto';
+import { UpdateProjectDto } from '../dtos/update-project.dto';
 import { Project } from '../entities/project.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
