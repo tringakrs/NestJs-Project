@@ -5,7 +5,6 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserGender } from '../enums/userGender.enum';
@@ -13,6 +12,7 @@ import { UserRoles } from '../enums/roles.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 import { UserStatus } from '../enums/userStatus.enum';
 import { Tasks } from 'src/api/tasks/entities/tasks.entity';
+import { OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends AuditEntity {
@@ -68,6 +68,9 @@ export class User extends AuditEntity {
   @Column({ nullable: true })
   isVerified: boolean;
 
+  @OneToMany(() => Tasks, (tasks) => tasks.users)
+  tasks: Tasks;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
@@ -88,7 +91,4 @@ export class User extends AuditEntity {
 
   @Column({ nullable: true })
   avatar: string;
-
-  @ManyToOne(() => Tasks, (tasks) => tasks.users)
-  tasks: Tasks;
 }

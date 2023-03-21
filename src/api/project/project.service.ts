@@ -5,7 +5,6 @@ import { UpdateProjectDto } from './dtos/update-project.dto';
 import { Project } from './entities/project.entity';
 import { ProjectRepository } from './repository/project.repository';
 
-/* eslint-disable prettier/prettier */
 @Injectable()
 export class ProjectService {
   constructor(private readonly projectRepository: ProjectRepository) {}

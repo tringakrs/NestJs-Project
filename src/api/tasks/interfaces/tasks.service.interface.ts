@@ -6,13 +6,13 @@ import { Tasks } from '../entities/tasks.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ITasksService {
-  create(createUserDto: CreateTasksDto): Promise<Tasks>;
+  create(createTasksDto: CreateTasksDto): Promise<Tasks>;
 
   findOne(tasksId: string): Promise<Tasks>;
 
   findAll(): Promise<Tasks[]>;
 
-  update(tasksId: string, updateUserDto: UpdateTasksDto): Promise<Tasks>;
+  update(tasksId: string, updateTasksDto: UpdateTasksDto): Promise<Tasks>;
 
   remove(tasksId: string): Promise<void>;
 }

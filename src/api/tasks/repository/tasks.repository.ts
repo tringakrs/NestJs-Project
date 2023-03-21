@@ -6,6 +6,7 @@ import { ITasksRepository } from '../interfaces/tasks.repository.interface';
 import { CreateTasksDto } from '../dtos/create-tasks.dto';
 import { UpdateTasksDto } from '../dtos/update-tasks.dto';
 import { User } from 'src/api/user/entities/user.entity';
+import { Project } from 'src/api/project/entities/project.entity';
 
 @CustomRepository(Tasks)
 export class TasksRepository
@@ -55,6 +56,16 @@ export class TasksRepository
     const user = await this.manager.findOne(User, { where: { uuid: userId } });
 
     tasks.users = [user];
+    await this.save(tasks);
+  }
+
+  async addProjectToTasks(tasksId: string, projectId: string): Promise<void> {
+    const tasks = await this.getTasksById(tasksId);
+    const project = await this.manager.findOne(Project, {
+      where: { uuid: projectId },
+    });
+
+    tasks.projects = [project];
     await this.save(tasks);
   }
 }

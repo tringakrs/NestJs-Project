@@ -3,10 +3,7 @@ import { CreateTasksDto } from '../dtos/create-tasks.dto';
 import { UpdateTasksDto } from '../dtos/update-tasks.dto';
 import { Tasks } from '../entities/tasks.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IProjectController {
-  getHello(tasks: Tasks): Promise<string>;
-
+export interface ITasksController {
   create(createTasksDto: CreateTasksDto): Promise<Tasks>;
 
   getMe(tasks: Tasks): Promise<Tasks>;

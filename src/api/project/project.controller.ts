@@ -21,14 +21,12 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
-  //@Roles(UserRoles.ADMIN)
   @Public()
   @Get()
   async getProject(): Promise<Project[]> {
     return await this.projectService.getProject();
   }
   
-  // @Roles(UserRoles.ADMIN)
   @Public()
   @Post()
   async create(@Body() data: CreateProjectDto) {

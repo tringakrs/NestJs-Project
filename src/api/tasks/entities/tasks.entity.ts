@@ -4,7 +4,7 @@ import { Column,
     DeleteDateColumn, 
     Entity, 
     UpdateDateColumn, 
-    OneToMany, } from 'typeorm';
+    ManyToOne, } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Type } from '../enums/type.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
@@ -39,24 +39,24 @@ export class Tasks extends AuditEntity {
     @Column({ nullable: true })
     deadline: Date;
 
-    @OneToMany(() => User, (users) => users.tasks)
+    @ManyToOne(() => User, (users) => users.tasks)
     users: User[]
     
-    @OneToMany(() => Project, (projects) => projects.tasks)
+    @ManyToOne(() => Project, (projects) => projects.tasks)
     projects: Project[]
 
     @CreateDateColumn({
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP(6)',
-      })
-      created_at: Date;
-    
-      @UpdateDateColumn({
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP(6)',
-      })
-      updated_at: Date;
-    
-      @DeleteDateColumn()
-      deleted_at: Date;
+      type: 'timestamp',
+      default: () => 'CURRENT_TIMESTAMP(6)',
+    })
+    created_at: Date;
+  
+    @UpdateDateColumn({
+      type: 'timestamp',
+      default: () => 'CURRENT_TIMESTAMP(6)',
+    })
+    updated_at: Date;
+  
+    @DeleteDateColumn()
+    deleted_at: Date;
 }
