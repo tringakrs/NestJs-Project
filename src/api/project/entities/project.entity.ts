@@ -20,7 +20,7 @@ export class Project extends AuditEntity {
   
     @Column({ nullable: true })
     name: string;
-project
+
     @Column({
         type: 'enum',
         nullable: false,
