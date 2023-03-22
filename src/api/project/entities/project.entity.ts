@@ -12,6 +12,7 @@ import { Type } from '../enums/type.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 import { Tasks } from 'src/api/tasks/entities/tasks.entity';
 import { OneToMany } from 'typeorm';
+import { Report } from 'src/api/reports/entities/report.entity';
 
 @Entity('project')
 export class Project extends AuditEntity {
@@ -35,6 +36,9 @@ export class Project extends AuditEntity {
 
       @OneToMany(() => Tasks, (tasks) => tasks.projects)
       tasks: Tasks;
+
+      @OneToMany(() => Report, (report) => report.projects)
+      reports: Report[];
 
     @CreateDateColumn({
         type: 'timestamp',
