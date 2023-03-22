@@ -10,8 +10,8 @@ import { ReportRepository } from './repository/report.repository';
 export class ReportService {
   constructor(
     private readonly reportRepository: ReportRepository,
-    private readonly projectService: ProjectService,
-    private readonly userService: UserService,
+    // private readonly projectService: ProjectService,
+    // private readonly userService: UserService,
   ) {}
 
   async getReport(): Promise<Report[]> {
@@ -26,29 +26,29 @@ export class ReportService {
     return await this.reportRepository.createReport(data);
   }
 
-  async assignProjectToReport(reportId: string, projectId: string) {
-    const project = await this.projectService.getProjectById(projectId);
-    const report = await this.reportRepository.findOne({
-      where: {
-        uuid: reportId,
-      },
-      relations: ['project'],
-    });
-    report.projects = project;
-    await this.reportRepository.save(report);
-    return report;
-  }
+  // async assignProjectToReport(reportId: string, projectId: string) {
+  //   const project = await this.projectService.getProjectById(projectId);
+  //   const report = await this.reportRepository.findOne({
+  //     where: {
+  //       uuid: reportId,
+  //     },
+  //     relations: ['project'],
+  //   });
+  //   report.projects = project;
+  //   await this.reportRepository.save(report);
+  //   return report;
+  // }
 
-  async assignUserToReport(reportId: string, userId: string): Promise<Report> {
-    const user = await this.userService.findOne(userId);
-    const report = await this.reportRepository.findOne({
-      where: {
-        uuid: reportId,
-      },
-      relations: ['user'],
-    });
-    report.user = user;
-    await this.reportRepository.save(report);
-    return report;
-  }
+  // async assignUserToReport(reportId: string, userId: string): Promise<Report> {
+  //   const user = await this.userService.findOne(userId);
+  //   const report = await this.reportRepository.findOne({
+  //     where: {
+  //       uuid: reportId,
+  //     },
+  //     relations: ['user'],
+  //   });
+  //   report.user = user;
+  //   await this.reportRepository.save(report);
+  //   return report;
+  // }
 }

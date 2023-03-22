@@ -3,7 +3,7 @@ import { BaseCustomRepository } from '../../../common/db/customBaseRepository/Ba
 import { CustomRepository } from '../../../common/db/decorators/CustomRepository.decorator';
 import { CreateProjectDto } from '../dtos/create-project.dto';
 import { Project } from '../entities/project.entity';
-import { IProjectRepository } from '../interfaces/project.repository.interface';
+import { IProjectRepository } from '../interfaces/project.interface';
 import { UpdateProjectDto } from '../dtos/update-project.dto';
 import { User } from 'src/api/user/entities/user.entity';
 

@@ -10,7 +10,7 @@ import { Column,
 import { User } from '../../user/entities/user.entity';
 import { Type } from '../enums/type.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
-import { Tasks } from 'src/api/tasks/entities/tasks.entity';
+import { Task } from 'src/api/task/entities/task.entity';
 import { OneToMany } from 'typeorm';
 import { Report } from 'src/api/reports/entities/report.entity';
 
@@ -34,8 +34,8 @@ export class Project extends AuditEntity {
       @JoinTable()
       users: User[]
 
-      @OneToMany(() => Tasks, (tasks) => tasks.projects)
-      tasks: Tasks;
+      @OneToMany(() => Task, (task) => task.projects)
+      task: Task;
 
       @OneToMany(() => Report, (report) => report.projects)
       reports: Report[];

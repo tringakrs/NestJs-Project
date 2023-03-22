@@ -11,7 +11,7 @@ import { UserGender } from '../enums/userGender.enum';
 import { UserRoles } from '../enums/roles.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 import { UserStatus } from '../enums/userStatus.enum';
-import { Tasks } from 'src/api/tasks/entities/tasks.entity';
+import { Task } from 'src/api/task/entities/task.entity';
 import { OneToMany } from 'typeorm';
 import { Report } from 'src/api/reports/entities/report.entity';
 
@@ -69,8 +69,8 @@ export class User extends AuditEntity {
   @Column({ nullable: true })
   isVerified: boolean;
 
-  @OneToMany(() => Tasks, (tasks) => tasks.users)
-  tasks: Tasks;
+  @OneToMany(() => Task, (task) => task.users)
+  task: Task;
 
   @OneToMany(() => Report, (report) => report.users)
   reports: Report[];

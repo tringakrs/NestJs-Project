@@ -12,7 +12,7 @@ import { Status } from '../enums/status.enum';
 import { Project } from '../../project/entities/project.entity';
 
 @Entity('tasks')
-export class Tasks extends AuditEntity {
+export class Task extends AuditEntity {
  
     @Column({
       type: 'enum',
@@ -39,10 +39,10 @@ export class Tasks extends AuditEntity {
     @Column({ nullable: true })
     deadline: Date;
 
-    @ManyToOne(() => User, (users) => users.tasks)
+    @ManyToOne(() => User, (users) => users.task)
     users: User[]
     
-    @ManyToOne(() => Project, (projects) => projects.tasks)
+    @ManyToOne(() => Project, (projects) => projects.task)
     projects: Project[]
 
     @CreateDateColumn({

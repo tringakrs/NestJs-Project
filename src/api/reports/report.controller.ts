@@ -40,21 +40,21 @@ export class ReportController {
     return await this.reportService.getReportById(id);
   }
 
-  @Public()
-  @Post('/add/:reportId/:projectId')
-  assignProjectToReport(
-    @Param('reportId') reportId: string,
-    @Param('projectId') projectId: string,
-  ) {
-    return this.reportService.assignProjectToReport(reportId, projectId);
-  }
+  // @Public()
+  // @Post('/add/:reportId/:projectId')
+  // assignProjectToReport(
+  //   @Param('reportId') reportId: string,
+  //   @Param('projectId') projectId: string,
+  // ) {
+  //   return this.reportService.assignProjectToReport(reportId, projectId);
+  // }
 
-  @Public()
-  @Post('/:reportId/:userId')
-  assignUserToReport(
-    @Param('reportId') reportId: string,
-    @Param('userId') userId: string,
-  ) {
-    return this.reportService.assignUserToReport(reportId, userId);
-  }
+  // @Public()
+  // @Post('/:reportId/:userId')
+  // assignUserToReport(
+  //   @Param('reportId') reportId: string,
+  //   @Param('userId') userId: string,
+  // ) {
+  //   return this.reportService.assignUserToReport(reportId, userId);
+  // }
 }
