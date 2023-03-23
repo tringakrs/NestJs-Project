@@ -13,7 +13,7 @@ import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 import { UserStatus } from '../enums/userStatus.enum';
 import { Task } from 'src/api/task/entities/task.entity';
 import { OneToMany } from 'typeorm';
-import { Report } from 'src/api/reports/entities/report.entity';
+import { Report } from 'src/api/report/entities/report.entity';
 
 @Entity('users')
 export class User extends AuditEntity {
@@ -73,7 +73,7 @@ export class User extends AuditEntity {
   task: Task;
 
   @OneToMany(() => Report, (report) => report.users)
-  reports: Report[];
+  report: Report[];
 
   @CreateDateColumn({
     type: 'timestamp',

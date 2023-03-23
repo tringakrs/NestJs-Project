@@ -20,12 +20,12 @@ export class Report extends AuditEntity {
   })
   filetype: FileType;
 
-  @ManyToOne(() => User, (user) => user.reports)
+  @ManyToOne(() => User, (user) => user.report)
   user: User;
 
   @ManyToOne(() => Project, (projects) => projects.reports)
   projects: Project;
 
-  @ManyToOne(() => User, (users) => users.reports)
+  @ManyToOne(() => User, (users) => users.report)
   users: User;
 }

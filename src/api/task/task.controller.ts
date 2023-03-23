@@ -17,7 +17,7 @@ import { Task } from './entities/task.entity';
 import { TaskService } from './task.service';
 
 @UseGuards(new RolesGuard())
-@ApiTags('task')
+@ApiTags('Task')
 @Controller('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}

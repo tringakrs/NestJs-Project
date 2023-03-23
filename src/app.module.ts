@@ -17,12 +17,11 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { ProjectModule } from './api/project/project.module';
 import { RoleModule } from './api/roles/role.module';
 import { TaskModule } from './api/task/task.module';
-import { ReportModule } from './api/reports/report.module';
+import { ReportModule } from './api/report/report.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(config as DataSourceOptions),
-    //konektimi me db
     ConfigModule.forRoot({
       envFilePath: ['.env'],
     }),

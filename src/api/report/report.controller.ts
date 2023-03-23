@@ -5,9 +5,7 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   UseGuards,
-  Put,
 } from '@nestjs/common';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,7 +15,7 @@ import { Report } from './entities/report.entity';
 import { CreateReportDto } from './dtos/report.dto';
 
 @UseGuards(new RolesGuard())
-@ApiTags('report')
+@ApiTags('Report')
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}

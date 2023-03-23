@@ -12,7 +12,7 @@ import { Type } from '../enums/type.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
 import { Task } from 'src/api/task/entities/task.entity';
 import { OneToMany } from 'typeorm';
-import { Report } from 'src/api/reports/entities/report.entity';
+import { Report } from 'src/api/report/entities/report.entity';
 
 @Entity('project')
 export class Project extends AuditEntity {
