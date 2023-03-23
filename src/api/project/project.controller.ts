@@ -56,4 +56,13 @@ export class ProjectController {
   async addUserToProject(@Param('id') projectId: string, @Param('userId') userId: string): Promise<void> {
   return await this.projectService.addUserToProject(projectId, userId);
   }
+
+  // @Public()
+  // @Post(':projectId')
+  // addUserToProject(
+  //   @Param('projectId') projectId: string,
+  //   @Body('userIds') userIds: string[],
+  // ): Promise<Project> {
+  //   return this.projectService.assignUsersToProject(projectId, userIds);
+  // }
 }

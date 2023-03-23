@@ -57,4 +57,12 @@ export class ProjectRepository
     project.users = [user];
     await this.save(project);
   }
+
+  async getProjects(): Promise<Project[]> {
+    return this.find();
+  }
+
+  async saveProject(project: CreateProjectDto): Promise<Project> {
+    return this.save(project);
+  }
 }

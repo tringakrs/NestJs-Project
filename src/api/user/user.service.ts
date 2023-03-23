@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import checkPermissionsUtil from '../../utils/checkPermissions.util';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -5,14 +6,14 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './entities/user.entity';
 import { IUserService } from './interfaces/user.service.interface';
 import { PermissinDto } from './dtos/permission.dto';
-import { UnprocessableEntityException } from '@nestjs/common/exceptions';
+import { NotFoundException, UnprocessableEntityException } from '@nestjs/common/exceptions';
 import { ForgotPasswordDto, ResetPasswordDto } from './dtos/password-reset.dto';
 import { PasswordReset } from './entities/reset-password.entity';
 import { hashDataBrypt } from '../../services/providers';
 import { randomBytes } from 'crypto';
 import { UserRepository } from './repository/user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectEventEmitter } from 'nest-emitter';
 import EventEmitter from 'events';
 
@@ -37,6 +38,14 @@ export class UserService implements IUserService {
       throw new UnprocessableEntityException('This user does not exist!');
     }
     return user;
+  }
+
+  async findUsersByIds(userIds: string[]): Promise<User[]> {
+    const users = this.userRepository.find({
+      where: { uuid: In(userIds) },
+    });
+    if (!users) throw new NotFoundException();
+    return users;
   }
 
   async findAll(): Promise<User[]> {
