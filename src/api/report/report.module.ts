@@ -16,5 +16,4 @@ import { UserModule } from '../user/user.module';
   controllers: [ReportController],
   providers: [ReportService, ProjectRepository],
 })
-// eslint-disable-next-line prettier/prettier
-export class ReportModule {}
+export class ReportModule {}
