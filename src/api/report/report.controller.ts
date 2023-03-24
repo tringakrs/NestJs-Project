@@ -6,6 +6,7 @@ import {
   Body,
   Param,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,6 +14,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { ReportService } from './report.service';
 import { Report } from './entities/report.entity';
 import { CreateReportDto } from './dtos/report.dto';
+import { Response } from 'express';
 
 @UseGuards(new RolesGuard())
 @ApiTags('Report')
@@ -38,21 +40,44 @@ export class ReportController {
     return await this.reportService.getReportById(id);
   }
 
-  // @Public()
-  // @Post('/add/:reportId/:projectId')
-  // assignProjectToReport(
-  //   @Param('reportId') reportId: string,
-  //   @Param('projectId') projectId: string,
-  // ) {
-  //   return this.reportService.assignProjectToReport(reportId, projectId);
-  // }
+  @Public()
+  @Post('/add/:reportId/:projectId')
+  assignProjectToReport(
+    @Param('reportId') reportId: string,
+    @Param('projectId') projectId: string,
+  ) {
+    return this.reportService.assignProjectToReport(reportId, projectId);
+  }
 
-  // @Public()
-  // @Post('/:reportId/:userId')
-  // assignUserToReport(
-  //   @Param('reportId') reportId: string,
-  //   @Param('userId') userId: string,
-  // ) {
-  //   return this.reportService.assignUserToReport(reportId, userId);
-  // }
+  @Public()
+  @Post('/:reportId/:userId')
+  assignUserToReport(
+    @Param('reportId') reportId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.reportService.assignUserToReport(reportId, userId);
+  }
+
+  @Public()
+  @Get('project/:projectId')
+  async findByProjectId(
+    @Param('projectId') projectId: string,
+  ): Promise<Report[]> {
+    return await this.reportService.findByProjectId(projectId);
+  }
+
+  @Public()
+  @Get('user/:userId')
+  async findByUserId(@Param('userId') userId: string): Promise<Report[]> {
+    return await this.reportService.findByUserId(userId);
+  }
+
+  @Public()
+  @Get(':id/download-pdf')
+  async downloadReportPdf(@Param('id') id: string, @Res() res: Response) {
+    const { fileName, stream } = await this.reportService.downloadReportPdf(id);
+    res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-type', 'application/pdf');
+    stream.pipe(res);
+  }
 }

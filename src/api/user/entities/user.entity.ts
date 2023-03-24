@@ -73,7 +73,7 @@ export class User extends AuditEntity {
   task: Task;
 
   @OneToMany(() => Report, (report) => report.users)
-  report: Report[];
+  reports: Report[];
 
   @CreateDateColumn({
     type: 'timestamp',

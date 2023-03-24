@@ -6,6 +6,16 @@ import { UserRepository } from './repository/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordReset } from './entities/reset-password.entity';
 
+// @Module({
+//   imports: [
+//     CustomRepositoryModule.forCustomRepository([UserRepository]),
+//     TypeOrmModule.forFeature([PasswordReset]),
+//   ],
+//   providers: [UserService],
+//   controllers: [UserController],
+// })
+// export class UserModule {}
+
 @Module({
   imports: [
     CustomRepositoryModule.forCustomRepository([UserRepository]),
@@ -13,5 +23,6 @@ import { PasswordReset } from './entities/reset-password.entity';
   ],
   providers: [UserService],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule {}

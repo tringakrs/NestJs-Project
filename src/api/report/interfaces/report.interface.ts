@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { IBaseCustomRepository } from 'src/common/db/customBaseRepository/interfaces/BaseCustomRepository.interface';
-import { CreateReportDto, UpdateReportDto } from '../dtos/report.dto';
+import { CreateReportDto } from '../dtos/report.dto';
 import { Report } from '../entities/report.entity';
 
 export interface IReportRepository extends IBaseCustomRepository<Report> {
