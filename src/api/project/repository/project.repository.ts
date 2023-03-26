@@ -3,23 +3,21 @@ import { BaseCustomRepository } from '../../../common/db/customBaseRepository/Ba
 import { CustomRepository } from '../../../common/db/decorators/CustomRepository.decorator';
 import { CreateProjectDto } from '../dtos/create-project.dto';
 import { Project } from '../entities/project.entity';
-import { IProjectRepository } from '../interfaces/project.interface';
+import { IProject } from '../interfaces/project.interface';
 import { UpdateProjectDto } from '../dtos/update-project.dto';
 import { User } from 'src/api/user/entities/user.entity';
 
 @CustomRepository(Project)
 export class ProjectRepository
   extends BaseCustomRepository<Project>
-  implements IProjectRepository
+  implements IProject
 {
   async getProject(): Promise<Project[]> {
     return await this.find();
   }
 
   async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
-    const project = this.create(createProjectDto);
-    await this.save(project);
-    return project;
+    return await this.save(this.create(createProjectDto));
   }
 
   async getProjectById(projectId: string): Promise<Project> {
@@ -56,13 +54,5 @@ export class ProjectRepository
 
     project.users = [user];
     await this.save(project);
-  }
-
-  async getProjects(): Promise<Project[]> {
-    return this.find();
-  }
-
-  async saveProject(project: CreateProjectDto): Promise<Project> {
-    return this.save(project);
   }
 }

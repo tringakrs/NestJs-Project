@@ -51,18 +51,12 @@ export class ProjectController {
     return await this.projectService.removeProject(id);
   }
 
-  @Public()
-  @Post(':id/users/:userId')
-  async addUserToProject(@Param('id') projectId: string, @Param('userId') userId: string): Promise<void> {
-  return await this.projectService.addUserToProject(projectId, userId);
+ 
+@Post(':projectId')
+  addUserToProject(
+    @Param('projectId') projectId: string,
+    @Body('userIds') userIds: string[],
+  ): Promise<Project> {
+    return this.projectService.assignUsersToProject(projectId, userIds);
   }
-
-  // @Public()
-  // @Post(':projectId')
-  // addUserToProject(
-  //   @Param('projectId') projectId: string,
-  //   @Body('userIds') userIds: string[],
-  // ): Promise<Project> {
-  //   return this.projectService.assignUsersToProject(projectId, userIds);
-  // }
 }

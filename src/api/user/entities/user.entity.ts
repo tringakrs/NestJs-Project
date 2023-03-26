@@ -5,6 +5,8 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinTable,
+  ManyToMany,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserGender } from '../enums/userGender.enum';
@@ -14,6 +16,7 @@ import { UserStatus } from '../enums/userStatus.enum';
 import { Task } from 'src/api/task/entities/task.entity';
 import { OneToMany } from 'typeorm';
 import { Report } from 'src/api/report/entities/report.entity';
+import { Project } from 'src/api/project/entities/project.entity';
 
 @Entity('users')
 export class User extends AuditEntity {
@@ -68,6 +71,10 @@ export class User extends AuditEntity {
   birthDate: Date;
   @Column({ nullable: true })
   isVerified: boolean;
+
+  @ManyToMany(() => Project)
+  @JoinTable()
+  projects: Project[];
 
   @OneToMany(() => Task, (task) => task.users)
   task: Task;

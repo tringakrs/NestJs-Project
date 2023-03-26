@@ -3,7 +3,7 @@ import { CreateProjectDto } from '../dtos/create-project.dto';
 import { UpdateProjectDto } from '../dtos/update-project.dto';
 import { Project } from '../entities/project.entity';
 
-export interface IProjectRepository extends IBaseCustomRepository<Project> {
+export interface IProject extends IBaseCustomRepository<Project> {
   getProject(): Promise<Project[]>;
 
   createProject(data: CreateProjectDto): Promise<Project>;
