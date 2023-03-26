@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import checkPermissionsUtil from '../../utils/checkPermissions.util';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -6,7 +5,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './entities/user.entity';
 import { IUserService } from './interfaces/user.service.interface';
 import { PermissinDto } from './dtos/permission.dto';
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common/exceptions';
+import { UnprocessableEntityException } from '@nestjs/common/exceptions';
 import { ForgotPasswordDto, ResetPasswordDto } from './dtos/password-reset.dto';
 import { PasswordReset } from './entities/reset-password.entity';
 import { hashDataBrypt } from '../../services/providers';
@@ -26,24 +25,23 @@ export class UserService implements IUserService {
     private passwordRepository: Repository<PasswordReset>,
     @InjectEventEmitter() private readonly emitter: EventEmitter,
   ) {}
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     const avatar = await this.generateImage(50, 50);
-    const data = {...createUserDto, avatar};
-    return await this.userRepository.save(
-      this.userRepository.create(data),
-    );
+    const data = { ...createUserDto, avatar };
+    return await this.userRepository.save(this.userRepository.create(data));
   }
-  
+
   async generateImage(width, height) {
     const url = 'https://random.imagecdn.app/' + width + '/' + height;
-  
+
     try {
       const response = await axios(url, { responseType: 'arraybuffer' });
       const result = Buffer.from(response.data, 'binary').toString('base64');
       return result;
     } catch (err) {
-      throw err;
-    }
+      throw err;
+    }
   }
 
   async findOne(userId: string): Promise<User> {
@@ -58,7 +56,6 @@ export class UserService implements IUserService {
     const users = this.userRepository.find({
       where: { uuid: In(userIds) },
     });
-    if (!users) throw new NotFoundException();
     return users;
   }
 

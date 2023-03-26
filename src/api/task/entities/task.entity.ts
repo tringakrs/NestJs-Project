@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Column, 
-    CreateDateColumn, 
-    DeleteDateColumn, 
+import { Column,  
     Entity, 
-    UpdateDateColumn, 
     ManyToOne, } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Type } from '../enums/type.enum';
@@ -39,24 +36,9 @@ export class Task extends AuditEntity {
     @Column({ nullable: true })
     deadline: Date;
 
-    @ManyToOne(() => User, (users) => users.task)
+    @ManyToOne(() => User, (users) => users.tasks)
     users: User[]
     
     @ManyToOne(() => Project, (projects) => projects.task)
     projects: Project[]
-
-    @CreateDateColumn({
-      type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP(6)',
-    })
-    created_at: Date;
-  
-    @UpdateDateColumn({
-      type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP(6)',
-    })
-    updated_at: Date;
-  
-    @DeleteDateColumn()
-    deleted_at: Date;
 }

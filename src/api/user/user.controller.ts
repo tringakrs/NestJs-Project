@@ -7,11 +7,13 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { IUserController } from './interfaces/user.controller.interface';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Permission } from '../../common/decorators/permissions.decorator';
 import { UserPermissions } from './enums/permissions.enum';
 import { GetCurrentUser } from '../../common/decorators/get-current-user.decorator';
@@ -26,44 +28,45 @@ import { UserRoles } from './enums/roles.enum';
 import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
 import { ForgotPasswordDto, ResetPasswordDto } from './dtos/password-reset.dto';
 import { Public } from '../../common/decorators/public.decorator';
+import { Cron } from '@nestjs/schedule';
+// import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('user')
 @ApiBearerAuth()
 @ApiTags('User')
 @UsePipes(new ValidationPipe())
 @UseInterceptors(ClassSerializerInterceptor)
+// @UseGuards(RolesGuard)
+@Public()
 export class UserController implements IUserController {
   constructor(private readonly usersService: UserService) {}
 
   //example how permissions work
-  @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
+  // @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
   @Public()
   @Get('hello')
   async getHello() {
     return `Hello from Hello Method`;
   }
-  @Public()
+
   @Roles(UserRoles.ADMIN)
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
   }
 
-  @Public()
   @Get('me')
   async getMe(@GetCurrentUser() user: User): Promise<User> {
     return await this.usersService.findOne(user.uuid);
   }
 
   // example how roles work
-  @Public()
   @Roles(UserRoles.ADMIN)
   @Get(':userId')
   async findOne(@Param('userId') userId: string): Promise<User> {
     return await this.usersService.findOne(userId);
   }
 
-  @Public()
   @Roles(UserRoles.ADMIN)
   @Get()
   @UseInterceptors(PaginationInterceptor)
@@ -71,7 +74,6 @@ export class UserController implements IUserController {
     return await this.usersService.findAll();
   }
 
-  @Public()
   @Patch('me')
   async updateMe(
     @GetCurrentUser() user: User,
@@ -80,8 +82,7 @@ export class UserController implements IUserController {
     return await this.usersService.update(user.uuid, updateUserDto);
   }
 
-  //@Roles(UserRoles.ADMIN)
-  @Public()
+  @Roles(UserRoles.ADMIN)
   @Patch(':userId')
   async updateUser(
     @Param('userId') userId: string,
@@ -90,15 +91,13 @@ export class UserController implements IUserController {
     return await this.usersService.update(userId, updateUserDto);
   }
 
-  //@Roles(UserRoles.ADMIN)
-  @Public()
+  @Roles(UserRoles.ADMIN)
   @Delete(':userId')
   async remove(@Param('userId') userId: string): Promise<void> {
     return await this.usersService.remove(userId);
   }
 
-  //@Roles(UserRoles.ADMIN)
-  @Public()
+  @Roles(UserRoles.ADMIN)
   @Post('add-permission/:userId')
   async addPermission(
     @Param('userId') userId: string,
@@ -107,8 +106,7 @@ export class UserController implements IUserController {
     return this.usersService.addPermission(userId, permission);
   }
 
-  //@Roles(UserRoles.ADMIN)
-  @Public()
+  @Roles(UserRoles.ADMIN)
   @Post('remove-permission/:userId')
   async removePermission(
     @Param('userId') userId: string,
@@ -117,6 +115,12 @@ export class UserController implements IUserController {
     return this.usersService.removePermission(userId, permission);
   }
 
+  @Public()
+  @Cron('1 * * * *')
+  @Get('generate/image')
+  async test() {
+    return await this.usersService.generateImage(140, 140);
+  }
   @Public()
   @Post('forgot')
   async forgotPassword(

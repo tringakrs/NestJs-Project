@@ -80,4 +80,5 @@ export class ReportController {
     res.setHeader('Content-type', 'application/pdf');
     stream.pipe(res);
   }
+  
 }

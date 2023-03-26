@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { IsUnique } from '../../../common/decorators/validation.decorator';
 
 export class CreateRoleDto {
   @IsNotEmpty()
