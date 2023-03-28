@@ -39,6 +39,6 @@ export class Task extends AuditEntity {
     @ManyToOne(() => User, (users) => users.tasks)
     users: User[]
     
-    @ManyToOne(() => Project, (projects) => projects.task)
+    @ManyToOne(() => Project, (projects) => projects.tasks)
     projects: Project[]
 }

@@ -29,7 +29,6 @@ export class TaskController {
     return await this.taskService.getTasks();
   }
 
-  // @Roles(UserRoles.ADMIN)
   @Public()
   @Post()
   async createTask(@Body() data: CreateTaskDto) {
@@ -65,4 +64,25 @@ export class TaskController {
   ): Promise<void> {
     return await this.taskService.addUserToTasks(tasksId, userId);
   }
+
+  @Public()
+  @Post(':id/project/:projectId')
+  async addProjectToTasks(
+    @Param('id') tasksId: string,
+    @Param('projectId') projectId: string,
+  ): Promise<void> {
+    return await this.taskService.addProjectToTasks(tasksId, projectId);
+  }
+
+  // @Public()
+  // @Post('/addTaskToUser')
+  // async addTaskToUser(@Body() data: {taskId:string, userId:string}):Promise<Task>{
+  //     return await this.taskService.addTaskToUser(data)
+  // }
+
+  // @Public()
+  // @Post('/addTaskToProject')
+  // async addTaskToProject(@Body() data: {taskId:string, projectId:string}){
+  //     return await this.taskService.addTaskToProject(data)
+  // }
 }

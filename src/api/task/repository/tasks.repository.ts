@@ -24,9 +24,6 @@ export class TaskRepository
 
   async getTasksById(taskId: string): Promise<Task> {
     const task = await this.findOneBy({ uuid: taskId });
-    if (!task) {
-      throw new UnprocessableEntityException('Task doesnt exist');
-    }
     return task;
   }
 

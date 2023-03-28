@@ -16,10 +16,6 @@ export class ProjectRepository
     return await this.find();
   }
 
-  async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
-    return await this.save(this.create(createProjectDto));
-  }
-
   async getProjectById(projectId: string): Promise<Project> {
     const project = await this.findOneBy({ uuid: projectId });
     if (!project) {
@@ -28,19 +24,14 @@ export class ProjectRepository
     return project;
   }
 
-  async updateProject(
-    projectId: string,
-    updateProjectDto: UpdateProjectDto,
-  ): Promise<Project> {
-    const project = await this.getProjectById(projectId);
-    if (!project) {
-      throw new UnprocessableEntityException(
-        `Project with ID ${projectId} not found`,
-      );
-    }
-    Object.assign(project, updateProjectDto);
-    await this.save(project);
-    return project;
+  async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
+    return await this.save(this.create(createProjectDto));
+  }
+
+  async updateProject(id: string, data: UpdateProjectDto): Promise<Project> {
+    const project = this.getProjectById(id);
+    await this.update((await project).id, data);
+    return await this.getProjectById(id);
   }
 
   async removeProject(projectId: string): Promise<void> {
