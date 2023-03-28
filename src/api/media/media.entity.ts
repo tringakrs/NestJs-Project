@@ -1,14 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Column, Entity } from 'typeorm';
-import { AuditEntity } from '../../common/db/customBaseEntites/AuditEntity';
+import { User } from 'src/api/user/entities/user.entity';
+import { AuditEntity } from 'src/common/db/customBaseEntites/AuditEntity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { MediaType } from './enums/media.type';
 
 @Entity('media')
 export class Media extends AuditEntity {
-  @Column()
-  key: string;
-
-  @Column()
+  @Column({ nullable: true })
   url: string;
 
   @Column({
@@ -16,5 +14,8 @@ export class Media extends AuditEntity {
     default: MediaType.IMAGE,
     enum: MediaType,
   })
-  mediaType: MediaType;
+  type: MediaType;
+
+  @ManyToOne(() => User, (user) => user.medias)
+  users: User;
 }

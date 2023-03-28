@@ -30,10 +30,10 @@ export class Project extends AuditEntity {
       @ManyToMany(() => User)
       @JoinTable()
       users: User[]
-
-      @OneToMany(() => Task, (task) => task.projects)
-      task: Task;
-
+      
       @OneToMany(() => Report, (report) => report.projects)
       reports: Report[];
+
+      @OneToMany(() => Task, (task) => task.projects)
+      tasks: Task;
 }

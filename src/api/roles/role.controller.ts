@@ -11,14 +11,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
-
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/role.dto';
 import { UpdateRoleDto } from './dto/role.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
 import { UserRoles } from '../user/enums/roles.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
+@UseGuards(new RolesGuard())
 @ApiBearerAuth()
 @ApiTags('Roles')
 @Controller('api/roles')

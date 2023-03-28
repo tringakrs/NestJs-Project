@@ -7,15 +7,11 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { IUserController } from './interfaces/user.controller.interface';
-import { PermissionsGuard } from '../../common/guards/permissions.guard';
-import { Permission } from '../../common/decorators/permissions.decorator';
-import { UserPermissions } from './enums/permissions.enum';
 import { GetCurrentUser } from '../../common/decorators/get-current-user.decorator';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -29,20 +25,17 @@ import { PaginationInterceptor } from '../../common/interceptors/pagination.inte
 import { ForgotPasswordDto, ResetPasswordDto } from './dtos/password-reset.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { Cron } from '@nestjs/schedule';
-// import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('user')
 @ApiBearerAuth()
 @ApiTags('User')
 @UsePipes(new ValidationPipe())
 @UseInterceptors(ClassSerializerInterceptor)
-// @UseGuards(RolesGuard)
 @Public()
 export class UserController implements IUserController {
   constructor(private readonly usersService: UserService) {}
 
   //example how permissions work
-  // @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
   @Public()
   @Get('hello')
   async getHello() {

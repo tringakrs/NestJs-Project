@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 export enum Type {
-    ECommerce = 'ECommerce',
+    TechGymStore = 'TechGymStore',
     Bookshop = "Bookshop"
 }
   

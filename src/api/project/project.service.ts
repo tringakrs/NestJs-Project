@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { Project } from './entities/project.entity';
@@ -8,41 +8,66 @@ import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly projectRepository: ProjectRepository, private readonly userService: UserService) {}
+  constructor(private readonly projectRepository: ProjectRepository, 
+    private readonly userService: UserService) {}
+  
   async getProject(): Promise<Project[]> {
-    return await this.projectRepository.getProject();
-  }
-  async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
-    return await this.projectRepository.createProject(createProjectDto);
-  }
-  async getProjectById(projectId: string): Promise<Project> {
-    return await this.projectRepository.getProjectById(projectId);
+    const projects = await this.projectRepository.getProject();
+    if (!projects || projects.length === 0) {
+      throw new NotFoundException('No projects found');
+    }
+    return projects;
   }
 
-  async updateProject(projectId: string, updateProjectDto : UpdateProjectDto) : Promise<Project>{
-    return await this.projectRepository.updateProject(projectId,updateProjectDto)
+  async getProjectById(projectId: string): Promise<Project> {
+    const project = await this.projectRepository.getProjectById(projectId);
+    if (!project) {
+      throw new NotFoundException(`Project with id ${projectId} not found`);
+    }
+    return project;
+  }
+
+  async createProject(createProjectDto : CreateProjectDto): Promise<Project>{
+    const projectExists = await this.projectRepository.findOneBy({ name: createProjectDto.name });
+
+      if (projectExists) {
+        throw new ConflictException(`A project with name ${createProjectDto.name} already exists`);
+      }
+
+    return await this.projectRepository.createProject(createProjectDto);
+}
+
+  async updateProject(uuid: string, updateProjectDto : UpdateProjectDto) : Promise<Project>{
+    const project = await this.getProjectById(uuid);
+
+      if (!project) {
+        throw new NotFoundException('Project not found');
+      }
+
+    return await this.projectRepository.updateProject(uuid, updateProjectDto);
   }
   
   async removeProject(projectId:string) : Promise<void>{
-    return await this.projectRepository.removeProject(projectId);
+    const project = await this.getProjectById(projectId);
+    if (!project) {
+      throw new NotFoundException(`Project with id ${projectId} not found`);
+    }
+    await this.projectRepository.removeProject(projectId);
   }
   
-  async assignUsersToProject(
-    projectId: string,
-    userId: string[],
-  ): Promise<Project> {
-    const project = await this.projectRepository.findOne({
-      where: {
-        uuid: projectId,
-      },
-      relations: ['users'],
-    });
+  async assignUsersToProjects(projectId: string, userId: string[]): Promise<Project> {
+    const project = await this.getProjectById(projectId);
+    if (!project) {
+      throw new NotFoundException(`Project with id ${projectId} not found`);
+    }
     if (!userId || userId.length === 0) {
       return project;
     }
+
     const users = await this.userService.findUsersByIds(userId);
+
     project.users = [...project.users, ...users];
-    await this.projectRepository.createProject(project);
-    return project;
+    const updatedProject = await this.projectRepository.createProject(project);
+    return updatedProject;
   }
 }
