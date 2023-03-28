@@ -28,18 +28,22 @@ import { UserRoles } from './enums/roles.enum';
 import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
 import { ForgotPasswordDto, ResetPasswordDto } from './dtos/password-reset.dto';
 import { Public } from '../../common/decorators/public.decorator';
+import { Cron } from '@nestjs/schedule';
+// import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('user')
 @ApiBearerAuth()
 @ApiTags('User')
 @UsePipes(new ValidationPipe())
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(PermissionsGuard)
+// @UseGuards(RolesGuard)
+@Public()
 export class UserController implements IUserController {
   constructor(private readonly usersService: UserService) {}
 
   //example how permissions work
-  @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
+  // @Permission(UserPermissions.CAN_ACCESS_HELLO_METHOD)
+  @Public()
   @Get('hello')
   async getHello() {
     return `Hello from Hello Method`;
@@ -111,6 +115,12 @@ export class UserController implements IUserController {
     return this.usersService.removePermission(userId, permission);
   }
 
+  @Public()
+  @Cron('1 * * * *')
+  @Get('generate/image')
+  async test() {
+    return await this.usersService.generateImage(140, 140);
+  }
   @Public()
   @Post('forgot')
   async forgotPassword(

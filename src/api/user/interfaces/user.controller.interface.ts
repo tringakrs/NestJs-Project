@@ -9,7 +9,6 @@ import { PermissinDto } from '../dtos/permission.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User } from '../entities/user.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IUserController {
   getHello(user: User): Promise<string>;
 

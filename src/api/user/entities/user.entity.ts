@@ -1,14 +1,18 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, ManyToMany, Entity, Index, OneToMany } from 'typeorm';
 import { UserGender } from '../enums/userGender.enum';
 import { UserRoles } from '../enums/roles.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
+import { UserStatus } from '../enums/userStatus.enum';
+import { Report } from 'src/api/report/entities/report.entity';
+import { Project } from 'src/api/project/entities/project.entity';
+import { Task } from 'src/api/task/entities/task.entity';
 
 @Entity('users')
 export class User extends AuditEntity {
   @Column({
     type: 'enum',
-    default: UserRoles.USER,
+    default: UserRoles.ADMIN,
     enum: UserRoles,
   })
   role: UserRoles;
@@ -52,4 +56,23 @@ export class User extends AuditEntity {
 
   @Column({ nullable: true })
   timezone: string;
+  @Column({ nullable: true })
+  birthDate: Date;
+  @Column({ nullable: true })
+  isVerified: boolean;
+
+  @Column({ type: 'enum', default: UserStatus.ACTIVE, enum: UserStatus })
+  status: UserStatus;
+
+  @Column({ nullable: true })
+  avatar: string;
+
+  @ManyToMany(() => Project, (project) => project.users, { cascade: true })
+  projects: Project[];
+
+  @OneToMany(() => Report, (report) => report.users)
+  reports: Report[];
+
+  @OneToMany(() => Task, (task) => task.users)
+  tasks: Task[];
 }
