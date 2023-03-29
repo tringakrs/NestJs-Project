@@ -14,9 +14,8 @@ import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { Project } from './entities/project.entity';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { UserRoles } from '../user/enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @UseGuards(new RolesGuard())
 @ApiTags('Project')
@@ -24,37 +23,37 @@ import { UserRoles } from '../user/enums/roles.enum';
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Get()
   async getProject(): Promise<Project[]> {
     return await this.projectService.getProject();
   }
 
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Get(':id')
   async getProjectById(@Param('id') id: string): Promise<Project> {
     return await this.projectService.getProjectById(id);
   }
   
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Post()
   async create(@Body() data: CreateProjectDto) {
     return await this.projectService.createProject(data);
   }
 
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Put(':id')
   async updateProject(@Param('id') id:string , @Body() data:UpdateProjectDto) :Promise<Project>{
     return await this.projectService.updateProject(id,data);
   }
 
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Delete(':id')
-  async removeProject(@Param('id') id: string): Promise<void> {
+  async removeProject(@Param('id') id:string) : Promise<void>{
     return await this.projectService.removeProject(id);
   }
 
-  @Roles(UserRoles.ADMIN || UserRoles.DEVELOPER || UserRoles.MANAGER)
+  @Public()
   @Post(':projectId')
     addUserToProject(
       @Param('projectId') projectId: string,

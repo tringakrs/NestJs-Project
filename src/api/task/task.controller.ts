@@ -22,7 +22,6 @@ import { TaskService } from './task.service';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  //@Roles(UserRoles.ADMIN)
   @Public()
   @Get()
   async getTasks(): Promise<Task[]> {
@@ -74,15 +73,4 @@ export class TaskController {
     return await this.taskService.addProjectToTasks(tasksId, projectId);
   }
 
-  // @Public()
-  // @Post('/addTaskToUser')
-  // async addTaskToUser(@Body() data: {taskId:string, userId:string}):Promise<Task>{
-  //     return await this.taskService.addTaskToUser(data)
-  // }
-
-  // @Public()
-  // @Post('/addTaskToProject')
-  // async addTaskToProject(@Body() data: {taskId:string, projectId:string}){
-  //     return await this.taskService.addTaskToProject(data)
-  // }
 }

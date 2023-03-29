@@ -9,8 +9,9 @@ import { CreateReportDto } from './dtos/report.dto';
 import { Report } from './entities/report.entity';
 import { ReportRepository } from './repository/report.repository';
 import { create as createPDF } from 'html-pdf';
-import * as ExcelJS from 'exceljs'; // using import
+import * as ExcelJS from 'exceljs';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 
 @Injectable()
 export class ReportService {
@@ -22,72 +23,81 @@ export class ReportService {
 
   async getReport(): Promise<Report[]> {
     const reports = await this.reportRepository.getReport();
-    
-      if (!reports || reports.length === 0) 
-        throw new NotFoundException('No reports found');
+
+    if (!reports || reports.length === 0)
+      throw new NotFoundException('No reports found');
 
     return reports;
-}
+  }
 
-  async getReportById(id: string): Promise<Report> {
-    return await this.reportRepository.getReportById(id);
+  async getReportById(reportId: string): Promise<Report> {
+    try {
+      const report = await this.reportRepository.getReportById(reportId);
+      if (!report) {
+        throw new NotFoundException('Report not found');
+      }
+      return report;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new NotFoundException('Report not found');
+      }
+      throw error;
+    }
   }
 
   async createReport(createReportDto: CreateReportDto): Promise<Report> {
     const reportExists = await this.reportRepository.findOneBy({
       name: createReportDto.name,
     });
-      if (reportExists) 
-        throw new ConflictException(
-          `A report with name ${createReportDto.name} already exists`,
-        );
+    if (reportExists)
+      throw new ConflictException(
+        `A report with name ${createReportDto.name} already exists`,
+      );
     return await this.reportRepository.createReport(createReportDto);
-}
+  }
 
+  async assignProjectToReport(data: { reportId: string; projectId: string }) {
+    const { reportId, projectId } = data;
+    const project = await this.projectService.getProjectById(projectId);
 
-async assignProjectToReport(data: { reportId: string, projectId: string }) {
-  const { reportId, projectId } = data;
-  const project = await this.projectService.getProjectById(projectId);
+    if (!project) throw new NotFoundException('Project not found');
 
-    if (!project)
-      throw new NotFoundException('Project not found');
+    const report = await this.reportRepository.findOne({
+      where: {
+        uuid: reportId,
+      },
+      relations: ['project'],
+    });
 
-  const report = await this.reportRepository.findOne({
-    where: {
-      uuid: reportId,
-    },
-    relations: ['project'],
-  });
+    if (!report) throw new NotFoundException('Report not found');
 
-    if (!report) 
-      throw new NotFoundException('Report not found');
+    report.project = project;
+    await this.reportRepository.save(report);
+    return report;
+  }
 
-  report.projects = project;
-  await this.reportRepository.save(report);
-  return report;
-}
+  async assignUserToReport(data: {
+    reportId: string;
+    userId: string;
+  }): Promise<Report> {
+    const { reportId, userId } = data;
+    const user = await this.userService.findOne(userId);
 
-async assignUserToReport(data: {reportId: string, userId: string}): Promise<Report> {
-  const { reportId, userId } = data;
-  const user = await this.userService.findOne(userId);
+    if (!user) throw new NotFoundException('User not found');
 
-    if (!user) 
-      throw new NotFoundException('User not found');
+    const report = await this.reportRepository.findOne({
+      where: {
+        uuid: reportId,
+      },
+      relations: ['user'],
+    });
 
-  const report = await this.reportRepository.findOne({
-    where: {
-      uuid: reportId,
-    },
-    relations: ['user'],
-  });
+    if (!report) throw new NotFoundException('Report not found');
 
-    if (!report) 
-      throw new NotFoundException('Report not found');
-
-  report.users = user;
-  await this.reportRepository.save(report);
-  return report;
-}
+    report.user = user;
+    await this.reportRepository.save(report);
+    return report;
+  }
 
   async findByProjectId(projectId: string): Promise<Report[]> {
     return await this.reportRepository
@@ -110,20 +120,20 @@ async assignUserToReport(data: {reportId: string, userId: string}): Promise<Repo
   ): Promise<{ fileName: string; stream: Readable }> {
     const report = await this.getReportById(id);
     const html = `
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <title>${report.name}</title>
-            </head>
-            <body>
-              <h1>${report.name}</h1>
-              <p>Report ID: ${report.uuid}</p>
-              <p>Report Project : ${report.projects}</p>
-              <p>Report User : ${report.users}</p>
-              <p>Date of creation : ${report.created_at}</p>
-            </body>
-          </html>
-        `;
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <title>${report.name}</title>
+                </head>
+                <body>
+                  <h1>${report.name}</h1>
+                  <p>Report ID: ${report.uuid}</p>
+                  <p>Report Project : ${report.project}</p>
+                  <p>Report User : ${report.user}</p>
+                  <p>Date of creation : ${report.created_at}</p>
+                </body>
+              </html>
+            `;
     const options = {
       format: 'Letter',
     };
@@ -133,7 +143,9 @@ async assignUserToReport(data: {reportId: string, userId: string}): Promise<Repo
     return { fileName, stream };
   }
 
-  async downloadReportExcel(id: string): Promise<{ fileName: string; stream: Readable }> {
+  async downloadReportExcel(
+    id: string,
+  ): Promise<{ fileName: string; stream: Readable }> {
     const report = await this.getReportById(id);
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Report');
@@ -148,7 +160,7 @@ async assignUserToReport(data: {reportId: string, userId: string}): Promise<Repo
     worksheet.addRow({
       name: report.name,
       id: report.uuid,
-      project: report.projects ? report.projects.name : '',
+      project: report.project ? report.project.name : '',
       createdAt: report.created_at,
     });
 
@@ -160,6 +172,4 @@ async assignUserToReport(data: {reportId: string, userId: string}): Promise<Repo
 
     return { fileName, stream };
   }
-
-  
 }

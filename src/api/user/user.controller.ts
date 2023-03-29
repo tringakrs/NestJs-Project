@@ -35,25 +35,12 @@ import { Cron } from '@nestjs/schedule';
 export class UserController implements IUserController {
   constructor(private readonly usersService: UserService) {}
 
-  //example how permissions work
-  @Public()
-  @Get('hello')
-  async getHello() {
-    return `Hello from Hello Method`;
-  }
-
   @Roles(UserRoles.ADMIN)
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
   }
 
-  @Get('me')
-  async getMe(@GetCurrentUser() user: User): Promise<User> {
-    return await this.usersService.findOne(user.uuid);
-  }
-
-  // example how roles work
   @Roles(UserRoles.ADMIN)
   @Get(':userId')
   async findOne(@Param('userId') userId: string): Promise<User> {
@@ -65,14 +52,6 @@ export class UserController implements IUserController {
   @UseInterceptors(PaginationInterceptor)
   async findAll(): Promise<User[]> {
     return await this.usersService.findAll();
-  }
-
-  @Patch('me')
-  async updateMe(
-    @GetCurrentUser() user: User,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return await this.usersService.update(user.uuid, updateUserDto);
   }
 
   @Roles(UserRoles.ADMIN)
@@ -114,6 +93,7 @@ export class UserController implements IUserController {
   async test() {
     return await this.usersService.generateImage(140, 140);
   }
+
   @Public()
   @Post('forgot')
   async forgotPassword(

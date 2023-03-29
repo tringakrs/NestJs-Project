@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto, UpdateTaskDto } from './dtos/task.dto';
 import { Task } from './entities/task.entity';
 import { TaskRepository } from './repository/tasks.repository';
@@ -13,76 +13,66 @@ export class TaskService {
     private readonly projectService: ProjectService){}
 
   async getTasks(): Promise<Task[]> {
-    return await this.taskRepository.getTasks();
+    const tasks = await this.taskRepository.getTasks();
+    
+    if (!tasks || tasks.length === 0) 
+      throw new NotFoundException('No reports found');
+
+  return tasks;
   }
 
   async getTaskById(taskId: string): Promise<Task> {
-    return await this.taskRepository.getTasksById(taskId);
+    const tasks = await this.taskRepository.getTasksById(taskId);
+    
+    if (!tasks) {
+      throw new NotFoundException('No reports found');
+    }
+  return tasks;
   }
 
-  async createTask(data: CreateTaskDto): Promise<Task> {
+  async createTask(data:CreateTaskDto):Promise<Task>{
+    const taskExists = await this.taskRepository.findOneBy({
+        name: data.name,
+      });
+      if (taskExists) 
+        throw new ConflictException(
+          `A task with name ${data.name} already exists`,
+        );
     return await this.taskRepository.createTask(data);
   }
 
   async updateTask(taskId: string, data: UpdateTaskDto): Promise<Task> {
+    const task = await this.getTaskById(taskId);
+    const taskExists = await this.taskRepository.findOne({
+      where: {
+        name: data.name,
+      },
+    });
+  
+    if (!task || (taskExists && task.name == taskExists.name)) {
+      throw new NotFoundException(
+        `A task with name ${data.name} already exists or task not found`,
+        );
+    }
+  
     return await this.taskRepository.updateTask(taskId, data);
   }
 
-  async removeTask(taskId: string): Promise<void> {
-    await this.taskRepository.removeTask(taskId);
+  async removeTask(taskId:string):Promise<void>{
+    const task = await this.getTaskById(taskId)
+    
+       if (!task) 
+           throw new NotFoundException('Task not found');
+
+    await this.taskRepository.removeTask(taskId)
   }
 
-//   async addTaskToUser(data: {taskId :string, userId: string}) : Promise<Task>{
-//     const { taskId , userId } = data;
-//     const user = await this.userService.findOne(userId);
+  async addUserToTasks(taskId: string, userId: string): Promise<void> {
+    return await this.taskRepository.addUserToTask(taskId, userId);
+  }
 
-//         if(!user) {
-//             throw new NotFoundException('User not found');
-//         }
-
-//     const task = await this.taskRepository.findOne({
-//         where:{
-//             uuid: taskId,
-//         },
-//         relations:['user']
-//     })
-//        if (!task) {
-//            throw new NotFoundException('Task not found');
-//        }
-//     task.users=user;
-//     await this.taskRepository.save(task)
-
-//     return task;
-//  }
-
-
-// async addTaskToProject(data: {taskId:string, projectId: string}) :Promise<Task>{
-//     const {taskId, projectId} = data;
-//     const project= await this.projectService.getProjectById(projectId);
-
-//         if(!project) {
-//             throw new NotFoundException('Project not found');
-//         }
-//     const task= await this.taskRepository.findOne({
-//         where:{
-//             uuid:taskId
-//         },
-//         relations:['project']
-//     })
-//        if (!task) {
-//            throw new NotFoundException('Task not found');
-//        } 
-//     task.projects = project;
-//     await this.taskRepository.save(task);
-//     return task;
-// }
-
-async addUserToTasks(taskId: string, userId: string): Promise<void> {
-  return await this.taskRepository.addUserToTask(taskId, userId);
-}
-
-async addProjectToTasks(taskId: string, projectId: string): Promise<void> {
-  return await this.taskRepository.addProjectToTask(taskId, projectId);
-}
+  async addProjectToTasks(taskId: string, projectId: string): Promise<void> {
+    return await this.taskRepository.addProjectToTask(taskId, projectId);
+  }
 
 }

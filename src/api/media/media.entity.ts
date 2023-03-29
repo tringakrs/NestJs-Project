@@ -17,5 +17,5 @@ export class Media extends AuditEntity {
   type: MediaType;
 
   @ManyToOne(() => User, (user) => user.medias)
-  users: User;
+  user: User;
 }

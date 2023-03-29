@@ -1,4 +1,3 @@
-import { UnprocessableEntityException } from '@nestjs/common';
 import { BaseCustomRepository } from '../../../common/db/customBaseRepository/BaseCustomRepository';
 import { CustomRepository } from '../../../common/db/decorators/CustomRepository.decorator';
 import { CreateProjectDto } from '../dtos/create-project.dto';
@@ -18,16 +17,12 @@ export class ProjectRepository
 
   async getProjectById(projectId: string): Promise<Project> {
     const project = await this.findOneBy({ uuid: projectId });
-    if (!project) {
-      throw new UnprocessableEntityException('This project does not exist!');
-    }
     return project;
   }
 
   async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
     return await this.save(this.create(createProjectDto));
   }
-
   async updateProject(id: string, data: UpdateProjectDto): Promise<Project> {
     const project = this.getProjectById(id);
     await this.update((await project).id, data);

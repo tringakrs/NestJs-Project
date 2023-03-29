@@ -16,6 +16,6 @@ export class Role {
   })
   slug: string;
 
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany((type) => User, (user) => user.role)
   users: User[];
 }

@@ -10,17 +10,11 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User } from '../entities/user.entity';
 
 export interface IUserController {
-  getHello(user: User): Promise<string>;
-
   create(createUserDto: CreateUserDto): Promise<User>;
-
-  getMe(user: User): Promise<User>;
 
   findOne(userId: string): Promise<User>;
 
   findAll(): Promise<User[]>;
-
-  updateMe(user: User, updateUserDto: UpdateUserDto): Promise<User>;
 
   updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User>;
 

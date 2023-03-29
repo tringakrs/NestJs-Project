@@ -1,5 +1,12 @@
 import { Exclude } from 'class-transformer';
-import { Column, ManyToMany, Entity, Index, OneToMany } from 'typeorm';
+import {
+  Column,
+  ManyToMany,
+  Entity,
+  Index,
+  OneToMany,
+  JoinTable,
+} from 'typeorm';
 import { UserGender } from '../enums/userGender.enum';
 import { UserRoles } from '../enums/roles.enum';
 import { AuditEntity } from '../../../common/db/customBaseEntites/AuditEntity';
@@ -68,15 +75,16 @@ export class User extends AuditEntity {
   @Column({ nullable: true })
   avatar: string;
 
-  @ManyToMany(() => Project, (project) => project.users, { cascade: true })
-  projects: Project[];
-
-  @OneToMany(() => Report, (report) => report.users)
+  @OneToMany(() => Report, (report) => report.user)
   reports: Report[];
 
-  @OneToMany(() => Task, (task) => task.users)
+  @OneToMany(() => Task, (task) => task.user)
   tasks: Task[];
 
-  @OneToMany(() => Media, (media) => media.users)
+  @ManyToMany(() => Project)
+  @JoinTable()
+  projects: Project[];
+
+  @OneToMany(() => Media, (media) => media.user)
   medias: Media[];
 }

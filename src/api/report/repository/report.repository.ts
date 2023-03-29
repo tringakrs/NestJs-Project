@@ -6,7 +6,8 @@ import { Report } from '../entities/report.entity';
 import { IReportRepository } from '../interfaces/report.interface';
 
 @CustomRepository(Report)
-export class ReportRepository  extends BaseCustomRepository<Report>
+export class ReportRepository
+  extends BaseCustomRepository<Report>
   implements IReportRepository
 {
   async getReport(): Promise<Report[]> {
@@ -16,6 +17,7 @@ export class ReportRepository  extends BaseCustomRepository<Report>
   async createReport(data: CreateReportDto): Promise<Report> {
     const report = this.create(data);
     await this.save(report);
+
     return report;
   }
 

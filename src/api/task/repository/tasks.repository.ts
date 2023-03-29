@@ -47,7 +47,7 @@ export class TaskRepository
     const tasks = await this.getTasksById(tasksId);
     const user = await this.manager.findOne(User, { where: { uuid: userId } });
 
-    tasks.users = [user];
+    tasks.user = [user];
     await this.save(tasks);
   }
 
@@ -57,7 +57,7 @@ export class TaskRepository
       where: { uuid: projectId },
     });
 
-    tasks.projects = [project];
+    tasks.project = [project];
     await this.save(tasks);
   }
 }

@@ -35,7 +35,7 @@ export class ProjectService {
       }
 
     return await this.projectRepository.createProject(createProjectDto);
-}
+  }
 
   async updateProject(uuid: string, updateProjectDto : UpdateProjectDto) : Promise<Project>{
     const project = await this.getProjectById(uuid);
@@ -49,25 +49,31 @@ export class ProjectService {
   
   async removeProject(projectId:string) : Promise<void>{
     const project = await this.getProjectById(projectId);
-    if (!project) {
-      throw new NotFoundException(`Project with id ${projectId} not found`);
-    }
-    await this.projectRepository.removeProject(projectId);
+     if(!project) 
+       throw new NotFoundException('Project not found');
+     await this.projectRepository.removeProject(projectId);
   }
-  
-  async assignUsersToProjects(projectId: string, userId: string[]): Promise<Project> {
-    const project = await this.getProjectById(projectId);
-    if (!project) {
-      throw new NotFoundException(`Project with id ${projectId} not found`);
-    }
-    if (!userId || userId.length === 0) {
-      return project;
-    }
+
+  async assignUsersToProjects(projectId: string, userId: string[],) : Promise<Project> {
+    const project = await this.projectRepository.findOne({
+      where: {
+        uuid: projectId,
+      },
+      relations: ['users'],
+    });
+
+      if (!project)
+        throw new NotFoundException('Project not found');
+      if (!userId || userId.length === 0) 
+        return project;
 
     const users = await this.userService.findUsersByIds(userId);
 
+      if (users.length === 0) 
+        throw new NotFoundException('User(s) not found');
+
     project.users = [...project.users, ...users];
-    const updatedProject = await this.projectRepository.createProject(project);
-    return updatedProject;
+    await this.projectRepository.createProject(project);
+    return project;
   }
 }
