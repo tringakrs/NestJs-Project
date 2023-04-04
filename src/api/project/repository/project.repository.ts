@@ -23,6 +23,7 @@ export class ProjectRepository
   async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
     return await this.save(this.create(createProjectDto));
   }
+
   async updateProject(id: string, data: UpdateProjectDto): Promise<Project> {
     const project = this.getProjectById(id);
     await this.update((await project).id, data);
